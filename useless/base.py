@@ -79,6 +79,10 @@ class Package:
     install_dir: str
     _checkpoints: list
     name: str
+    features: set
+
+    def __init__(self):
+        self.features = set()
 
     def setup(self, src_dir, build_dir, install_dir):
         self.src_dir = src_dir + self.name + '/'
@@ -93,9 +97,8 @@ class Package:
             pass
         self.checkpoint('__init__', dummy)
 
-    @abc.abstractmethod
     def enable(self, feature):
-        pass
+        self.features.add(feature)
 
     @abc.abstractmethod
     def build(self, config: str):
