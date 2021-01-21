@@ -1,6 +1,0 @@
-{
-    "name":"zlib",
-    "repository":{
-        "git":"https://github.com/madler/zlib"
-    }
-}
