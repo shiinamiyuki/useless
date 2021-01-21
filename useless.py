@@ -4,11 +4,12 @@ import json
 import subprocess
 import pathlib
 import shutil
-from functools import cache
+import multiprocessing
+# from functools import cache
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 assert dir_path == os.getcwd()
-dir_path = dir_path.replace('\\','/')
+dir_path = dir_path.replace('\\', '/')
 WORKSPACE_DIR = dir_path + '/.useless/'
 PKG_DIR = dir_path + '/packages/'
 SRC_DIR = dir_path + '/.useless/source/'
@@ -40,6 +41,7 @@ def mtime(path):
 def is_older(path1, path2):
     return mtime(path1) < mtime(path2)
 
+
 def check_is_installed(package):
     src_stamp = SRC_DIR + package + '/.source'
     build_stamp = SRC_DIR + package + '/.build'
@@ -47,6 +49,7 @@ def check_is_installed(package):
     if not os.path.exists(src_stamp) or not os.path.exists(build_stamp) or not os.path.exists(install_stamp):
         return False
     return is_older(src_stamp, build_stamp) and is_older(build_stamp, install_stamp)
+
 
 def find_dependencies(package):
     with open(PKG_DIR + package + '.json') as f:
@@ -58,10 +61,12 @@ def find_dependencies(package):
         res = res.union(find_dependencies(dep))
     return res
 
+
 def remove(package):
     shutil.rmtree(SRC_DIR + package)
     shutil.rmtree(BUILD_DIR + package)
     shutil.rmtree(INSTALL_DIR + package)
+
 
 def install(package):
     with open(PKG_DIR + package + '.json') as f:
@@ -96,9 +101,11 @@ def install(package):
             target_all = 'all'
             if sys.platform == 'win32':
                 target_all = 'ALL_BUILD'
-
+            geneator_args = []
+            if sys.platform == 'linux':
+                geneator_args = ['-j', str(multiprocessing.cpu_count())]
             ret = subprocess.call(
-                ['cmake', '--build', '.', '--config', 'Release', '--target', target_all], cwd=build_dir)
+                ['cmake', '--build', '.', '--config', 'Release', '--target', target_all, '--', *geneator_args], cwd=build_dir)
             if ret != 0:
                 print('build failed with code ', ret, file=sys.stderr)
                 exit(1)
@@ -128,6 +135,7 @@ def check_init():
     if not os.path.isdir(INSTALL_DIR):
         os.mkdir(INSTALL_DIR)
 
+
 def yn():
     while True:
         x = input()
@@ -135,6 +143,7 @@ def yn():
             return True
         if x == 'N' or x == 'n':
             return False
+
 
 def main(argv):
     if len(argv) < 2:
