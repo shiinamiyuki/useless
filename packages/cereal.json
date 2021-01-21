@@ -1,0 +1,10 @@
+{
+    "name":"cereal",
+    "repository":{
+        "git":"https://github.com/USCiLab/cereal"
+    },
+    "cmake-configure":[
+        "-DSKIP_PERFORMANCE_COMPARISON=ON",
+        "-DBUILD_TESTS=OFF"
+    ]
+}
