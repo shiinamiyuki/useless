@@ -5,7 +5,7 @@
     },
     "cmake-configure":[
         "-DEMBREE_TASKING_SYSTEM=INTERNAL",
-        "-DEMBREE_STATIC_LIB=ON",
+        "-DEMBREE_STATIC_LIB=OFF",
         "-DEMBREE_ISPC_SUPPORT=OFF",
         "-DEMBREE_TUTORIALS=OFF"
     ]

@@ -1,0 +1,8 @@
+{
+    "name":"glm",
+    "repository":{
+        "git":"https://github.com/g-truc/glm"
+    },
+    "cmake-configure":[
+    ]
+}
