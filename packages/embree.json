@@ -1,0 +1,12 @@
+{
+    "name":"embree",
+    "repository":{
+        "git":"https://github.com/embree/embree"
+    },
+    "cmake-configure":[
+        "-DEMBREE_TASKING_SYSTEM=INTERNAL",
+        "-DEMBREE_STATIC_LIB=ON",
+        "-DEMBREE_ISPC_SUPPORT=OFF",
+        "-DEMBREE_TUTORIALS=OFF"
+    ]
+}

@@ -3,6 +3,8 @@ import sys
 import json
 import subprocess
 import pathlib
+import shutil
+from functools import cache
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 assert dir_path == os.getcwd()
@@ -32,7 +34,7 @@ def mkdir_if_none(path):
 def mtime(path):
     fname = pathlib.Path(path)
     assert fname.exists(), f'No such file: {fname}'
-    return fname.stat().st_mtime
+    return fname.stat().st_mtime_ns
 
 
 def is_older(path1, path2):
@@ -46,10 +48,25 @@ def check_is_installed(package):
         return False
     return is_older(src_stamp, build_stamp) and is_older(build_stamp, install_stamp)
 
-def install(package):
-    if check_is_installed(package):
-        print('package {} already installed'.format(package))
+@cache
+def find_dependencies(package):
     with open(PKG_DIR + package + '.json') as f:
+        config = json.load(f)
+        assert config['name'] == package
+        dependencies = config.get('depends', [])
+    res = set(dependencies)
+    for dep in dependencies:
+        res = res.union(find_dependencies(dep))
+    return res
+
+def remove(package):
+    shutil.rmtree(SRC_DIR + package)
+    shutil.rmtree(BUILD_DIR + package)
+    shutil.rmtree(INSTALL_DIR + package)
+
+def install(package):
+    with open(PKG_DIR + package + '.json') as f:
+        print('installing {}'.format(package))
         config = json.load(f)
         assert config['name'] == package
         dependencies = config.get('depends', [])
@@ -112,6 +129,13 @@ def check_init():
     if not os.path.isdir(INSTALL_DIR):
         os.mkdir(INSTALL_DIR)
 
+def yn():
+    while True:
+        x = input()
+        if x == 'Y' or x == 'y':
+            return True
+        if x == 'N' or x == 'n':
+            return False
 
 def main(argv):
     if len(argv) < 2:
@@ -120,7 +144,23 @@ def main(argv):
     cmd = argv[1]
     if cmd == 'install':
         for package in argv[2:]:
-            install(package)
+            if check_is_installed(package):
+                print('package {} already installed'.format(package))
+                continue
+            deps = find_dependencies(package)
+            print('The following packages will be installed:')
+            for dep in list(deps) + [package]:
+                if not check_is_installed(dep):
+                    print('  ', dep)
+            print('Continue [Y/N]')
+            if yn():
+                install(package)
+    if cmd == 'remove':
+        for package in argv[2:]:
+            if not check_is_installed(package):
+                print('package {} is not installed'.format(package))
+                exit(1)
+            remove(package)
 
 
 if __name__ == "__main__":
