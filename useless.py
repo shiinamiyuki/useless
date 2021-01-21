@@ -144,6 +144,15 @@ def yn():
         if x == 'N' or x == 'n':
             return False
 
+def extract_opts(argv):
+    opts = []
+    args = []
+    for i in argv:
+        if i.startswith('--'):
+            opts.append(i)
+        else:
+            args.append(i)
+    return opts, args
 
 def main(argv):
     if len(argv) < 2:
@@ -151,17 +160,26 @@ def main(argv):
     check_init()
     cmd = argv[1]
     if cmd == 'install':
-        for package in argv[2:]:
+        all_packages = []
+        opts, packages = extract_opts(argv[2:])
+        for package in packages:
             if check_is_installed(package):
                 print('package {} already installed'.format(package))
                 continue
+            all_packages.append(package)
             deps = find_dependencies(package)
-            print('The following packages will be installed:')
-            for dep in list(deps) + [package]:
-                if not check_is_installed(dep):
-                    print('  ', dep)
+            all_packages.extend(list(deps))
+        print('The following packages will be installed:')
+        for pkg in all_packages:
+            if not check_is_installed(pkg):
+                print('  ', pkg)
+        if '--quiet' not in opts:
             print('Continue [Y/N]')
             if yn():
+                for package in packages:
+                 install(package)
+        else:
+            for package in packages:
                 install(package)
     if cmd == 'remove':
         for package in argv[2:]:
