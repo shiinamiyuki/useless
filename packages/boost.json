@@ -1,0 +1,7 @@
+{
+    "name":"boost",
+    "repository":{
+        "git":"https://github.com/boostorg/boost.git"
+    },
+    "build-script":"boost/build.py"
+}
