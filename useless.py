@@ -48,7 +48,6 @@ def check_is_installed(package):
         return False
     return is_older(src_stamp, build_stamp) and is_older(build_stamp, install_stamp)
 
-@cache
 def find_dependencies(package):
     with open(PKG_DIR + package + '.json') as f:
         config = json.load(f)
