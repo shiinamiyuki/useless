@@ -11,4 +11,4 @@ class Solver(CMakePackage):
 
     def download(self):
         self.checkpoint('download', lambda: download_git(
-            'https://github.com/jarro2783/cxxopts', self.src_dir))
+            'https://github.com/jarro2783/cxxopts', self.src_dir, tag='v2.2.1'))

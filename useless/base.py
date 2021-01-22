@@ -40,12 +40,14 @@ def is_older(path1, path2):
     return mtime(path1) < mtime(path2)
 
 
-def download_git(url, src_dir, recursive=True, shallow=True):
+def download_git(url, src_dir, recursive=True, shallow=True, tag=None):
     args = ['git', 'clone']
     if recursive:
         args.append('--recursive')
     if shallow:
         args.extend(['--depth', '1'])
+    if tag:
+        args.extend(['--branch', tag])
     args.extend([url, src_dir])
     ret = subprocess.call(args)
     if ret:
