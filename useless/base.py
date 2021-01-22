@@ -87,7 +87,7 @@ class Package:
     def setup(self, src_dir, build_dir, install_dir):
         self.src_dir = src_dir + self.name + '/'
         self.build_dir = build_dir + self.name + '/'
-        self.install_dir = install_dir + self.name + '/'
+        self.install_dir = install_dir
         mkdir_if_none(self.src_dir)
         mkdir_if_none(self.build_dir)
         mkdir_if_none(self.install_dir)
@@ -127,13 +127,14 @@ class CMakePackage(Package):
     options: dict
 
     def __init__(self):
+        super().__init__()
         self.options = dict()
 
     def setup(self, src_dir, build_dir, install_dir):
         super().setup(src_dir, build_dir, install_dir)
 
         self.set('CMAKE_INSTALL_PREFIX', install_dir)
-        self.set('DCMAKE_MODULE_PATH', install_dir)
+        self.set('CMAKE_MODULE_PATH', install_dir)
 
     def set(self, opt, val):
         self.options[opt] = val
@@ -184,10 +185,12 @@ def __resolve_package():
     def F(package_name):
         if package_name in cache:
             return cache[package_name]
-        spec = importlib.util.spec_from_file_location(
-            package_name, PKG_DIR + package_name + '.py')
-        m = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(m)
+        # spec = importlib.util.spec_from_file_location(
+        #     package_name, PKG_DIR + package_name + '.py')
+        # m = importlib.util.module_from_spec(spec)
+        importlib.import_module('useless.packages')
+        m = importlib.import_module('useless.packages.' + package_name)
+        # spec.loader.exec_module(m)
         package = m.Solver()  # shit name
         cache[package_name] = package
         return package
