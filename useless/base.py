@@ -134,7 +134,7 @@ class CMakePackage(Package):
         super().setup(src_dir, build_dir, install_dir)
 
         self.set('CMAKE_INSTALL_PREFIX', install_dir)
-        self.set('CMAKE_MODULE_PATH', install_dir)
+        self.set('CMAKE_PREFIX_PATH', install_dir)
 
     def set(self, opt, val):
         self.options[opt] = val
