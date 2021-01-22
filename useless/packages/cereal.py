@@ -8,6 +8,7 @@ class Solver(CMakePackage):
         self.name = 'cereal'
         self.set('SKIP_PERFORMANCE_COMPARISON', 'ON')
         self.set('BUILD_TESTS', 'OFF')
+        self.set('WITH_WERROR', 'OFF')
 
     def download(self):
         self.checkpoint('download', lambda: download_git(
