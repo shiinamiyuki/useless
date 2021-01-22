@@ -4,16 +4,25 @@ from useless.base import *
 
 cmake_src = """
 cmake_minimum_required(VERSION 3.12)
-project(stb)
-
+project(stb LANGUAGES C)
+include(GNUInstallDirs)
 add_library(stb_image stb_image.h stb_image.c)
 add_library(stb::image ALIAS stb_image)
 
-file(GLOB headers stb_*.h)
 
+install(TARGETS stb_image 
+    EXPORT stb-config
+    DESTINATION lib)
 
-install(TARGETS stb_image DESTINATION lib)
-install(FILES ${headers} DESTINATION include )
+install(
+    EXPORT stb-config DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/stb
+)
+
+install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/stb
+    FILES_MATCHING PATTERN "*.hpp*" PATTERN "*.inl*" PATTERN "*.h*"
+)
 
 
 """
