@@ -11,3 +11,12 @@ class Solver(CMakePackage):
     def download(self):
         self.checkpoint('download', lambda: download_git(
             'https://github.com/g-truc/glm', self.src_dir))
+        with open(self.src_dir+'CMakeLists.txt', 'r') as f:
+            cmake = f.read()
+        cmake += """
+
+install(DIRECTORY glm DESTINATION include )
+
+"""
+        with open(self.src_dir+'CMakeLists.txt', 'w') as f:
+            f.write(cmake)
