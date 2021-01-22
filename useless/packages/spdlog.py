@@ -7,6 +7,7 @@ class Solver(CMakePackage):
         super().__init__()
         self.name = 'spdlog'
         self.depends(resolve_package('fmt'))
+        self.set('CMAKE_POSITION_INDEPENDENT_CODE', 'TRUE')
 
     def download(self):
         self.checkpoint('download', lambda: download_git(

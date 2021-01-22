@@ -42,6 +42,7 @@ class Solver(CMakePackage):
     def __init__(self):
         super().__init__()
         self.name = 'stb'
+        self.set('CMAKE_POSITION_INDEPENDENT_CODE', 'TRUE')
 
     def download(self):
         def F():
