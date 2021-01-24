@@ -65,7 +65,7 @@ def download_file(url: str, dst):
 
 dependency_graph = dict()
 # A deps B
-print('fuck')
+
 
 def add_dependency(A, B):
     # print(A, B, dependency_graph)
