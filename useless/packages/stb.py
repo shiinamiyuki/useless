@@ -38,7 +38,7 @@ stb_image_write_c = """
 """
 
 
-class Solver(CMakePackage):
+class Resolver(CMakePackage):
     def __init__(self):
         super().__init__()
         self.name = 'stb'

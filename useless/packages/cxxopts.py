@@ -2,7 +2,7 @@ from useless import base
 from useless.base import *
 
 
-class Solver(CMakePackage):
+class Resolver(CMakePackage):
     def __init__(self):
         super().__init__()
         self.name = 'cxxopts'

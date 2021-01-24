@@ -7,7 +7,7 @@ import shutil
 import multiprocessing
 import abc
 import importlib
-
+import requests
 
 PKG_DIR = ''
 SRC_DIR = ''
@@ -49,11 +49,18 @@ def download_git(url, src_dir, recursive=True, shallow=True, tag=None):
     if tag:
         args.extend(['--branch', tag])
     args.extend([url, src_dir])
+    args.extend(['--jobs', str(multiprocessing.cpu_count())])
     ret = subprocess.call(args)
     if ret:
         print('git clone failed with code ',
               ret, file=sys.stderr)
         exit(1)
+
+
+def download_file(url: str, dst):
+    r = requests.get(url, allow_redirects=True)
+    with open(dst, 'wb') as f:
+        f.write(r.content)
 
 
 dependency_graph = dict()
@@ -71,8 +78,8 @@ def add_dependency(A, B):
         print('cyclic dependency between package {} and {}'.format(
             A.name, B.name), file=sys.stderr)
         exit(1)
-
-    dependency_graph[A].append(B)
+    if B not in dependency_graph[A]:
+        dependency_graph[A].append(B)
 
 
 class Package:
@@ -82,11 +89,15 @@ class Package:
     _checkpoints: list
     name: str
     features: set
+    base_src_dir: str
+    base_build_dir: str
 
     def __init__(self):
         self.features = set()
 
     def setup(self, src_dir, build_dir, install_dir):
+        self.base_build_dir = build_dir
+        self.base_src_dir = src_dir
         self.src_dir = src_dir + self.name + '/'
         self.build_dir = build_dir + self.name + '/'
         self.install_dir = install_dir
@@ -193,8 +204,9 @@ def __resolve_package():
         importlib.import_module('useless.packages')
         m = importlib.import_module('useless.packages.' + package_name)
         # spec.loader.exec_module(m)
-        package = m.Solver()  # shit name
+        package = m.Resolver()
         cache[package_name] = package
+        add_dependency(package, None)
         return package
 
     return F
@@ -227,7 +239,7 @@ def topo_sort(graph: dict):
         if v in permanent:
             return
         if v in temp:
-            assert False
+            raise RuntimeError("cyclic dependency!")
         temp.add(v)
 
         for u in graph[v]:

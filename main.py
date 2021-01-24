@@ -47,7 +47,7 @@ def install(package_name):
     #     package_name, PKG_DIR + package_name + '.py')
     # m = importlib.util.module_from_spec(spec)
     # spec.loader.exec_module(m)
-    # package = m.Solver()  # shit name
+    # package = m.Resolver()  # shit name
     # package.setup(src_dir, build_dir, install_dir)
     # package.download()
     # package.build(config)
