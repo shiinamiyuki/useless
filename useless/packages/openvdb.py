@@ -6,11 +6,11 @@ class Resolver(CMakePackage):
     def __init__(self):
         super().__init__()
         self.name = 'openvdb'
-        self.depends(resolve_package('openexr'))
-        self.depends(resolve_package('tbb'))
+        self.depends(require('openexr'))
+        self.depends(require('tbb'))
         self.set('USE_BLOSC','OFF')
         self.set('USE_EXR', 'ON')
-        
+
     def setup(self, src_dir, build_dir, install_dir):
         super().setup(src_dir, build_dir, install_dir)
         self.set('Boost_ROOT', src_dir+'/boost/')

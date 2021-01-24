@@ -6,7 +6,7 @@ class Resolver(CMakePackage):
     def __init__(self):
         super().__init__()
         self.name = 'spdlog'
-        self.depends(resolve_package('fmt'))
+        self.depends(require('fmt'))
         self.set('CMAKE_POSITION_INDEPENDENT_CODE', 'TRUE')
 
     def download(self):

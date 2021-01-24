@@ -192,7 +192,7 @@ class CMakePackage(Package):
         self.checkpoint('install', run_install)
 
 
-def __resolve_package():
+def __require():
     cache = dict()
 
     def F(package_name):
@@ -212,7 +212,7 @@ def __resolve_package():
     return F
 
 
-resolve_package = __resolve_package()
+require = __require()
 
 
 def setup(pkg_dir, src_dir, build_dir, install_dir):

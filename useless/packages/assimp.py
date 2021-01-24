@@ -8,7 +8,7 @@ class Resolver(CMakePackage):
         self.name = 'assimp'
         self.set('ASSIMP_BUILD_TESTS', "OFF")
         self.set('BUILD_SHARED_LIBS', "OFF")
-        self.depends(resolve_package('zlib'))
+        self.depends(require('zlib'))
 
     def download(self):
         self.checkpoint('download', lambda: download_git(

@@ -6,7 +6,7 @@ class Resolver(CMakePackage):
     def __init__(self):
         super().__init__()
         self.name = 'openexr'
-        self.depends(resolve_package('zlib'))
+        self.depends(require('zlib'))
         self.set('PYILMBASE_ENABLE', 'OFF')
 
     def download(self):
