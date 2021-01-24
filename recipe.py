@@ -32,6 +32,7 @@ class Recipe:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         base.run_build_graph(self.config)
+        # pass
 
 # def begin(config, useless_dir):
 #     return Recipe(config, useless_dir)

@@ -13,6 +13,7 @@ PKG_DIR = ''
 SRC_DIR = ''
 BUILD_DIR = ''
 INSTALL_DIR = ''
+GENERATOR = ''
 
 
 def touch(path):
@@ -84,6 +85,7 @@ def add_dependency(A, B):
         dependency_graph[A].append(B)
     # print(dependency_graph)
 
+
 class Package:
     src_dir: str
     build_dir: str
@@ -140,7 +142,7 @@ class Package:
 
 class CMakePackage(Package):
     options: dict
-
+    
     def __init__(self):
         super().__init__()
         self.options = dict()
@@ -157,10 +159,13 @@ class CMakePackage(Package):
     def build(self, config: str):
         config_args = ['-D{}={}'.format(k, self.options[k])
                        for k in self.options]
+        generator_args = []
+        if GENERATOR is not None:
+            generator_args = ['-G'+GENERATOR]
 
         def run_config():
             ret = subprocess.call(
-                ['cmake', self.src_dir, '-DCMAKE_BUILD_TYPE='+config, *config_args], cwd=self.build_dir)
+                ['cmake', self.src_dir, *generator_args, '-DCMAKE_BUILD_TYPE='+config, *config_args], cwd=self.build_dir)
             if ret != 0:
                 print('cmake configure failed with code ',
                       ret, file=sys.stderr)
@@ -217,15 +222,43 @@ def __require():
 require = __require()
 
 
-def setup(pkg_dir, src_dir, build_dir, install_dir):
+def is_cmd_available(cmd):
+    return shutil.which(cmd) is not None
+
+
+def __init_generator():
+    global GENERATOR
+    if GENERATOR is None:
+        if sys.platform == 'linux':
+            if is_cmd_available('ninja'):
+                GENERATOR = 'Ninja'
+            else:
+                GENERATOR = None
+        # elif sys.platform == 'win32':
+        #     GENERATOR = 'Ninja'
+        #     if not is_cmd_available('ninja'):
+        #         download_file(
+        #             'https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-win.zip', BUILD_DIR + 'ninja.zip')
+        #         import zipfile
+        #         with zipfile.ZipFile(BUILD_DIR + 'ninja.zip') as zf:
+        #             zf.extractall(BUILD_DIR)
+        #         # print(os.environ)
+        #         os.environ['PATH'] += BUILD_DIR
+
+
+def setup(pkg_dir, src_dir, build_dir, install_dir, generator=None):
     global SRC_DIR
     global BUILD_DIR
     global INSTALL_DIR
     global PKG_DIR
+    global GENERATOR
+    GENERATOR = generator
     PKG_DIR = pkg_dir
     SRC_DIR = src_dir
     BUILD_DIR = build_dir
     INSTALL_DIR = install_dir
+    __init_generator()
+
 
 def topo_sort(graph: dict):
     vertices = set()

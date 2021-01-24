@@ -1,5 +1,5 @@
 from useless.base import *
-
+import sys
 
 class Resolver(CMakePackage):
     def __init__(self):
@@ -7,6 +7,8 @@ class Resolver(CMakePackage):
         self.name = 'openexr'
         self.depends(require('zlib'))
         self.set('PYILMBASE_ENABLE', 'OFF')
+        if sys.platform == 'win32' and GENERATOR is None:
+            self.set('CMAKE_CXX_FLAGS', '/MP')
 
     def download(self):
         self.checkpoint('download', lambda: download_git(
