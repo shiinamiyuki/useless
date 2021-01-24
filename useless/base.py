@@ -65,12 +65,14 @@ def download_file(url: str, dst):
 
 dependency_graph = dict()
 # A deps B
-
+print('fuck')
 
 def add_dependency(A, B):
+    # print(A, B, dependency_graph)
     if A not in dependency_graph:
         dependency_graph[A] = []
     if B is None:
+        # print(dependency_graph)
         return
     if B not in dependency_graph:
         dependency_graph[B] = []
@@ -80,7 +82,7 @@ def add_dependency(A, B):
         exit(1)
     if B not in dependency_graph[A]:
         dependency_graph[A].append(B)
-
+    # print(dependency_graph)
 
 class Package:
     src_dir: str
@@ -225,7 +227,6 @@ def setup(pkg_dir, src_dir, build_dir, install_dir):
     BUILD_DIR = build_dir
     INSTALL_DIR = install_dir
 
-
 def topo_sort(graph: dict):
     vertices = set()
     for k in graph:
@@ -257,7 +258,8 @@ def topo_sort(graph: dict):
 
 def run_build_graph(config):
     order = topo_sort(dependency_graph)
-    print(order)
+    # print(dependency_graph)
+    # print(order)
     for package in order:
         package.setup(SRC_DIR, BUILD_DIR, INSTALL_DIR)
         package.download()

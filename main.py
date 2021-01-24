@@ -53,8 +53,8 @@ def install(package_name):
     # package.build(config)
     # package.install(config)
     useless.base.setup(PKG_DIR, SRC_DIR, BUILD_DIR, INSTALL_DIR)
-    package = useless.base.resolve_package(package_name)
-    useless.base.add_dependency(package, None)
+    package = useless.base.require(package_name)
+    # useless.base.add_dependency(package, None)
     useless.base.run_build_graph(config)
 
 

@@ -1,4 +1,3 @@
-from useless import base
 from useless.base import *
 
 
