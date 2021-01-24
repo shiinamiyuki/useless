@@ -8,6 +8,7 @@ class Resolver(CMakePackage):
         self.name = 'openvdb'
         self.depends(require('openexr'))
         self.depends(require('tbb'))
+        self.depends(require('boost'))
         self.set('USE_BLOSC','OFF')
         self.set('USE_EXR', 'ON')
 
