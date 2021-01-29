@@ -229,7 +229,7 @@ def is_cmd_available(cmd):
 def __init_generator():
     global GENERATOR
     if GENERATOR is None:
-        if sys.platform == 'linux':
+        if sys.platform == 'linux' or sys.platform == 'darwin':
             if is_cmd_available('ninja'):
                 GENERATOR = 'Ninja'
             else:
