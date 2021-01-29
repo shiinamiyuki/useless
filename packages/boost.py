@@ -52,7 +52,7 @@ class Resolver(Package):
         #         subprocess.call([self.src_dir+'/b2.exe', "threading=multi",
         #                          "address-model=64", 'release', *module_args], cwd=self.src_dir)
         #     self.checkpoint('build', build)
-        if sys.platform == 'linux':
+        if sys.platform == 'linux' or sys.platform == 'darwin':
             pass
             # def bootstrap():
             #     subprocess.call(['bash', './bootstrap.sh'], cwd=self.src_dir)
@@ -83,7 +83,7 @@ class Resolver(Package):
             self.checkpoint('rename', rename)
 
     def download(self):
-        if sys.platform == 'linux':
+        if sys.platform == 'linux' or sys.platform == 'darwin':
             pass
         # self.checkpoint('download', lambda: download_git(
         #     'https://github.com/boostorg/boost', self.src_dir, recursive=True))
