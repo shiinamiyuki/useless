@@ -79,9 +79,13 @@ class Resolver(Package):
                     if filename.startswith('boost') and filename.endswith('.lib') and '-' in filename:
                         copyfile(self.src_dir+'stage/lib/'+filename, self.src_dir +
                                  'stage/lib/'+filename[:filename.find('-')]+'.lib')
+                        copyfile(self.src_dir+'stage/lib/'+filename, self.install_dir +
+                                 'bin/'+filename[:filename.find('-')]+'.lib')
                     elif filename.startswith('boost') and filename.endswith('.dll') and '-' in filename:
                         copyfile(self.src_dir+'stage/lib/'+filename, self.src_dir +
                                  'stage/lib/'+filename[:filename.find('-')]+'.dll')
+                        copyfile(self.src_dir+'stage/lib/'+filename, self.install_dir +
+                                 'bin/'+filename[:filename.find('-')]+'.dll')
 
             self.checkpoint('rename', rename)
 
