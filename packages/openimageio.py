@@ -9,6 +9,7 @@ class Resolver(CMakePackage):
         self.set('OPENEXR_BUILD_SHARED_LIBS', "OFF")
         self.set('OPENEXR_BUILD_SHARED_LIBS', "OFF")
         self.set('ILMBASE_BUILD_SHARED_LIBS', "OFF")
+        self.set('USE_PYTHON','OFF')
         self.depends(require('openexr'))
         boost = require('boost')
         self.depends(boost)

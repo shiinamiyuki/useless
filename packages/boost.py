@@ -70,22 +70,26 @@ class Resolver(Package):
             self.checkpoint('bootstrap', bootstrap)
 
             def build():
-                subprocess.call([self.src_dir+'/b2.exe', "threading=multi",
+                subprocess.call([self.src_dir+'/b2.exe', "threading=multi", 'link=shared',
                                  "address-model=64", 'release', *module_args], cwd=self.src_dir)
             self.checkpoint('build', build)
 
             def rename():
                 for filename in os.listdir(self.src_dir+'stage/lib/'):
-                    if filename.startswith('libboost'):
+                    if filename.startswith('boost') and filename.endswith('.lib') and '-' in filename:
                         copyfile(self.src_dir+'stage/lib/'+filename, self.src_dir +
-                                 'stage/lib/'+filename[3:filename.find('-')]+'.lib')
+                                 'stage/lib/'+filename[:filename.find('-')]+'.lib')
+                    elif filename.startswith('boost') and filename.endswith('.dll') and '-' in filename:
+                        copyfile(self.src_dir+'stage/lib/'+filename, self.src_dir +
+                                 'stage/lib/'+filename[:filename.find('-')]+'.dll')
 
             self.checkpoint('rename', rename)
 
     def download(self):
         if sys.platform == 'linux' or sys.platform == 'darwin':
-            pass
-        # self.checkpoint('download', lambda: download_git(
-        #     'https://github.com/boostorg/boost', self.src_dir, recursive=True))
-        # subprocess.call(['git', 'submodule', 'update',
-        #                  '--init', '--recursive'], cwd=self.src_dir)
+            return
+        self.checkpoint('download', lambda: download_git(
+            'https://github.com/boostorg/boost', self.src_dir, recursive=True))
+        # self.checkpoint('fetch_submod', lambda:
+                        # subprocess.call(['git', 'submodule', 'update',
+                                        #  '--init', '--recursive', '-j '+str(multiprocessing.cpu_count())], cwd=self.src_dir))
