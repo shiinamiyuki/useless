@@ -13,7 +13,7 @@ class Resolver(CMakePackage):
 
     def download(self):
         version = '4.2.0'
-        self.src_dir = self.base_src_dir + 'tiff/tiff-' + version + '/' 
+        self.src_dir = self.base_src_dir + 'tiff-' + version + '/' 
         def F():
             download_file('https://download.osgeo.org/libtiff/tiff-{}.zip'.format(version),
                           dst=self.base_src_dir+'tiff.zip')
