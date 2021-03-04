@@ -86,6 +86,8 @@ class Resolver(Package):
                                  'stage/lib/'+filename[:filename.find('-')]+'.dll')
                         copyfile(self.src_dir+'stage/lib/'+filename, self.install_dir +
                                  'bin/'+filename[:filename.find('-')]+'.dll')
+                        copyfile(self.src_dir+'stage/lib/'+filename, self.install_dir +
+                                 'bin/'+filename)
 
             self.checkpoint('rename', rename)
 
